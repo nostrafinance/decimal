@@ -1,0 +1,202 @@
+import { Numberish } from '../src/decimal';
+import { DecimalFormat } from '../src/format';
+
+describe('DecimalFormat', () => {
+  describe('Multiplier format', () => {
+    const cases = [
+      { value: 0, expected: '0' },
+      { value: 0, fractionDigits: 1, expected: '0.0' },
+      { value: 0.0546, fractionDigits: 3, expected: '0.054' },
+      { value: '0.000000000056', fractionDigits: 3, expected: '0.000' },
+      { value: 0.0546, fractionDigits: 1, expected: '0.0' },
+      { value: 12, fractionDigits: 1, expected: '12.0' },
+      { value: 1234, fractionDigits: 1, expected: '1.2k' },
+      { value: 100000000, fractionDigits: 1, expected: '100.0M' },
+      { value: 100000000, fractionDigits: 1, expected: '100.0M' },
+      { value: 299792458, fractionDigits: 1, expected: '299.8M' },
+      { value: 759878, fractionDigits: 1, expected: '759.9k' },
+      { value: 759878, fractionDigits: 0, expected: '760k' },
+      { value: 123, fractionDigits: 1, expected: '123.0' },
+      { value: 123.456, fractionDigits: 1, expected: '123.4' },
+      { value: 123.456, fractionDigits: 2, expected: '123.45' },
+      { value: 123.456, fractionDigits: 4, expected: '123.4560' },
+      { value: -1000, fractionDigits: 0, expected: '-1k' },
+      { value: '0', expected: '0' },
+      { value: '0', fractionDigits: 0, expected: '0' },
+      { value: '0.0', fractionDigits: 2, expected: '0.00' },
+      { value: '0.000000007631', fractionDigits: 2, expected: '0.00' },
+      { value: '3.4', fractionDigits: 2, expected: '3.40' },
+      { value: '123', fractionDigits: 3, expected: '123.000' },
+      { value: '123.45678', fractionDigits: 0, expected: '123' },
+      { value: '123.45678', fractionDigits: 2, expected: '123.45' },
+      { value: '-123', fractionDigits: 3, expected: '-123.000' },
+      { value: '-123.45678', fractionDigits: 0, expected: '-123' },
+      { value: '-123.45678', fractionDigits: 2, expected: '-123.45' },
+      { value: '7389', expected: '7k' },
+      { value: '7389', fractionDigits: 1, expected: '7.4k' },
+      { value: '-7389', fractionDigits: 1, expected: '-7.4k' },
+      { value: '63427184', fractionDigits: 0, expected: '63M' },
+      { value: '63427184', fractionDigits: 2, expected: '63.43M' },
+      { value: '-63427184', fractionDigits: 0, expected: '-63M' },
+      { value: '-63427184', fractionDigits: 2, expected: '-63.43M' },
+      { value: '0', noMultiplierFractionDigits: 1, currency: '$', expected: '$0.0' },
+      { value: '0', fractionDigits: 0, noMultiplierFractionDigits: 2, expected: '0.00' },
+      { value: '0.0', fractionDigits: 2, expected: '0.00' },
+      { value: '0.000000007631', fractionDigits: 2, noMultiplierFractionDigits: 5, expected: '0.00000' },
+      { value: '7389', expected: '7k' },
+      { value: '7389', fractionDigits: 1, noMultiplierFractionDigits: 3, expected: '7.4k' },
+      { value: '-7389', fractionDigits: 1, noMultiplierFractionDigits: 1, expected: '-7.4k' },
+      { value: '63427184', fractionDigits: 0, expected: '63M' },
+      { value: '63427184', fractionDigits: 2, noMultiplierFractionDigits: 1, currency: 'ETH', expected: '63.43M ETH' },
+      { value: '-63427184', fractionDigits: 0, noMultiplierFractionDigits: 3, expected: '-63M' },
+      { value: '-63427184', fractionDigits: 2, noMultiplierFractionDigits: 5, expected: '-63.43M' },
+    ] as {
+      value: Numberish;
+      fractionDigits?: number;
+      noMultiplierFractionDigits?: number;
+      currency?: string;
+      lessThanFormat?: boolean;
+      expected: string;
+    }[];
+
+    cases.forEach(({ value, fractionDigits, noMultiplierFractionDigits, currency, expected }) => {
+      it(`formats ${value} to ${expected} with ${fractionDigits} fraction digits`, () => {
+        expect(
+          DecimalFormat.format(value, {
+            style: 'multiplier',
+            fractionDigits,
+            noMultiplierFractionDigits,
+            currency,
+          }),
+        ).toEqual(expected);
+      });
+    });
+  });
+
+  describe('Decimal format', () => {
+    const cases = [
+      { value: '0', fractionDigits: 1, expected: '0.0' },
+      { value: '0.0', fractionDigits: 1, expected: '0.0' },
+      { value: '0.00000123', fractionDigits: 2, lessThanFormat: true, expected: '<0.01' },
+      { value: '12', fractionDigits: 1, expected: '12.0' },
+      { value: '.12123', fractionDigits: 4, expected: '0.1212' },
+      { value: '.12123124', fractionDigits: 3, expected: '0.121' },
+      { value: '1234', fractionDigits: 1, expected: '1,234.0' },
+      { value: '100000000', fractionDigits: 1, expected: '100,000,000.0' },
+      { value: '299792458', fractionDigits: 1, expected: '299,792,458.0' },
+      { value: '759878', fractionDigits: 1, expected: '759,878.0' },
+      { value: '759878', fractionDigits: 0, expected: '759,878' },
+      { value: '123', fractionDigits: 1, expected: '123.0' },
+      { value: '123.456', fractionDigits: 1, expected: '123.4' },
+      { value: '123.456', fractionDigits: 2, expected: '123.45' },
+      { value: '123.456', fractionDigits: 0, expected: '123' },
+      { value: '123123', expected: '123,123' },
+      { value: '123', expected: '123' },
+      { value: '123.4', expected: '123' },
+      { value: '123.456', expected: '123' },
+      { value: '123.456', fractionDigits: 4, expected: '123.4560' },
+      { value: '123.0000000000011', fractionDigits: 1, expected: '123.0' },
+      { value: '123.00000000456', expected: '123' },
+      { value: '123.0000000045', fractionDigits: 3, expected: '123.000' },
+    ] as {
+      value: Numberish;
+      fractionDigits?: number;
+      lessThanFormat?: boolean;
+      expected: string;
+    }[];
+
+    cases.forEach(({ value, fractionDigits, lessThanFormat, expected }) => {
+      it(`formats ${value} to ${expected} with ${fractionDigits} fraction digits`, () => {
+        expect(DecimalFormat.format(value, { style: 'decimal', fractionDigits, lessThanFormat })).toEqual(expected);
+      });
+    });
+  });
+
+  describe('Currency format', () => {
+    const cases = [
+      { value: '0', fractionDigits: 1, currency: '$', expected: '$0.0' },
+      { value: '0.0', fractionDigits: 1, currency: '$', expected: '$0.0' },
+      { value: '0.00000123', fractionDigits: 2, currency: '$', lessThanFormat: true, expected: '<$0.01' },
+      { value: '12', fractionDigits: 1, currency: '$', expected: '$12.0' },
+      { value: '.12123', fractionDigits: 4, currency: '$', expected: '$0.1212' },
+      { value: '.12123124', fractionDigits: 3, currency: '$', expected: '$0.121' },
+      { value: '1234', fractionDigits: 1, currency: '$', expected: '$1,234.0' },
+      { value: '100000000', fractionDigits: 1, currency: '$', expected: '$100,000,000.0' },
+      { value: '299792458', fractionDigits: 1, currency: '$', expected: '$299,792,458.0' },
+      { value: '759878', fractionDigits: 1, currency: '$', expected: '$759,878.0' },
+      { value: '759878', fractionDigits: 0, currency: '$', expected: '$759,878' },
+      { value: '123', fractionDigits: 1, currency: '$', expected: '$123.0' },
+      { value: '123.456', fractionDigits: 1, currency: '$', expected: '$123.4' },
+      { value: '123.456', fractionDigits: 2, currency: 'ETH', expected: '123.45 ETH' },
+      { value: '123.456', fractionDigits: 0, currency: 'DAI', expected: '123 DAI' },
+      { value: '123123', currency: '$', expected: '$123,123' },
+      { value: '123', currency: '$', expected: '$123' },
+      { value: '123.4', currency: 'nUSDC', expected: '123 nUSDC' },
+      { value: '123.456', currency: '$', expected: '$123' },
+      { value: '123.456', fractionDigits: 4, currency: '$', expected: '$123.4560' },
+      { value: '123.0000000000011', fractionDigits: 1, currency: '$', expected: '$123.0' },
+      { value: '123.00000000456', currency: 'iWBTC-c', expected: '123 iWBTC-c' },
+      { value: '123.0000000045', fractionDigits: 3, currency: '$', expected: '$123.000' },
+    ] as {
+      value: Numberish;
+      fractionDigits?: number;
+      currency: string;
+      lessThanFormat?: boolean;
+      expected: string;
+    }[];
+
+    cases.forEach(({ value, fractionDigits, currency, lessThanFormat, expected }) => {
+      it(`formats ${value} to ${expected} (currency) with ${fractionDigits} fraction digits`, () => {
+        expect(DecimalFormat.format(value, { style: 'currency', fractionDigits, lessThanFormat, currency })).toEqual(
+          expected,
+        );
+      });
+    });
+  });
+
+  describe('Percentage format', () => {
+    [
+      { value: 0, expected: '0%' },
+      { value: 0, fractionDigits: 1, round: true, expected: '0.0%' },
+      { value: 0.0546, fractionDigits: 3, round: false, expected: '5.46%' },
+      { value: '0.000000000056', fractionDigits: 3, round: false, expected: '0.000%' },
+      { value: 0.0546, fractionDigits: 1, round: true, expected: '5.5%' },
+      { value: 12, fractionDigits: 1, expected: '1200%' },
+      { value: 1234, fractionDigits: 1, round: false, expected: '123400%' },
+      { value: 100000000, fractionDigits: 1, round: true, expected: '10000000000.0%' },
+      { value: 299792458, fractionDigits: 1, round: false, expected: '29979245800%' },
+      { value: 759878, fractionDigits: 1, round: false, expected: '75987800%' },
+      { value: 759878, fractionDigits: 0, round: true, expected: '75987800%' },
+      { value: 123, fractionDigits: 1, expected: '12300%' },
+      { value: 123.456, fractionDigits: 1, round: false, expected: '12345.6%' },
+      { value: 123.456, fractionDigits: 2, round: true, expected: '12345.60%' },
+      { value: 123.456, fractionDigits: 4, round: false, expected: '12345.6%' },
+      { value: -1000, fractionDigits: 0, expected: '-100000%' },
+      { value: '0', round: true, expected: '0%' },
+      { value: '0', fractionDigits: 0, round: false, expected: '0%' },
+      { value: '0.0', fractionDigits: 2, round: true, expected: '0.00%' },
+      { value: '0.000000007631', fractionDigits: 2, round: false, expected: '0.00%' },
+      { value: '0.000000007631', fractionDigits: 2, round: false, lessThanFormat: true, expected: '0.00%' },
+      { value: '3.4', fractionDigits: 2, round: true, expected: '340.00%' },
+      { value: '123', fractionDigits: 3, expected: '12300%' },
+      { value: '123.45678', fractionDigits: 0, round: false, expected: '12345%' },
+      { value: '123.45678', fractionDigits: 2, round: true, expected: '12345.68%' },
+      { value: '-123', fractionDigits: 3, round: false, expected: '-12300%' },
+      { value: '-123.45678', fractionDigits: 0, expected: '-12345%' },
+      { value: '-123.45678', fractionDigits: 2, round: false, expected: '-12345.67%' },
+      { value: '7389', round: true, expected: '738900%' },
+      { value: '7389', fractionDigits: 1, round: false, expected: '738900%' },
+      { value: '-7389', fractionDigits: 1, round: true, expected: '-738900.0%' },
+      { value: '63427184', fractionDigits: 0, round: false, expected: '6342718400%' },
+      { value: '63427184', fractionDigits: 2, expected: '6342718400%' },
+      { value: '-63427184', fractionDigits: 0, round: false, expected: '-6342718400%' },
+      { value: '-63427184', fractionDigits: 2, expected: '-6342718400%' },
+    ].forEach(({ value, fractionDigits, round, lessThanFormat, expected }) => {
+      it(`formats ${value} to ${expected}`, () => {
+        expect(DecimalFormat.format(value, { style: 'percentage', fractionDigits, lessThanFormat, round })).toEqual(
+          expected,
+        );
+      });
+    });
+  });
+});
