@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2020",
     "module": "ESNext",
     "moduleResolution": "node",
     "declaration": true,
     "emitDeclarationOnly": true,
     "sourceMap": true,
+    "rootDir": "src",
     "outDir": "dist",
     "declarationDir": "types",
     "allowSyntheticDefaultImports": true,
