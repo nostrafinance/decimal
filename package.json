@@ -1,6 +1,7 @@
 {
   "name": "tempus-decimal",
-  "version": "0.0.2",
+  "private": false,
+  "version": "0.0.3",
   "type": "module",
   "main": "./dist/decimal.umd.cjs",
   "module": "./dist/decimal.js",
@@ -37,17 +38,15 @@
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.2",
     "vite": "^4.3.2",
-    "vite-plugin-dts": "^2.3.0"
+    "vite-plugin-dts": "^2.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.39.0"
   },
   "peerDependencies": {
     "ethers": "^6.3.0"
   },
   "files": [
     "dist"
-  ],
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.59.2",
-    "@typescript-eslint/parser": "^5.59.2",
-    "eslint": "^8.39.0"
-  }
+  ]
 }

@@ -1,3 +1,3 @@
 # Decimal
 
-Decimal library for working with bignum numbers.
+Decimal library for working with big numbers.
