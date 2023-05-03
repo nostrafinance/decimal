@@ -1,54 +1,52 @@
 {
-  "name": "@tempusfinance/decimal",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "rollup -c",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "yarn lint:prettier && yarn lint:eslint",
-    "lint:eslint": "eslint \"**/*.{js,ts}\"",
-    "lint:prettier": "yarn prettier \"**/*.{md,json,yml}\"",
-    "prepare": "husky install && chmod +x .husky/* && rollup -c"
+  "name": "tempus-decimal",
+  "private": false,
+  "version": "0.0.3",
+  "type": "module",
+  "main": "./dist/decimal.umd.cjs",
+  "module": "./dist/decimal.js",
+  "types": "./dist/index.d.ts",
+  "description": "Library for working with bignum numbers",
+  "author": "Tempus",
+  "homepage": "https://github.com/tempusfinance/decimal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tempusfinance/decimal"
   },
-  "dependencies": {
-    "ethers": "^6.3.0"
+  "bugs": {
+    "url": "https://github.com/tempusfinance/decimal/issues"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/decimal.js",
+      "require": "./dist/decimal.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "jest",
+    "lint": "npm run lint:prettier && npm run lint:eslint",
+    "lint:eslint": "npx eslint \"**/*.{js,ts}\"",
+    "lint:prettier": "npx prettier \"**/*.{md,json,yml}\""
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^24.1.0",
-    "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.2",
-    "@rollup/plugin-typescript": "^11.1.0",
     "@types/jest": "^29.5.1",
-    "@typescript-eslint/eslint-plugin": "^5.59.0",
-    "@typescript-eslint/parser": "^5.59.0",
-    "eslint": "^8.39.0",
-    "husky": "^8.0.3",
+    "@types/node": "^18.16.3",
     "jest": "^29.5.0",
-    "lint-staged": "^13.2.1",
-    "prettier": "^2.8.8",
-    "rollup": "^3.21.0",
-    "rollup-plugin-dts": "^5.3.0",
-    "rollup-plugin-replace": "^2.2.0",
     "ts-jest": "^29.1.0",
-    "ts-node": "^10.9.1",
-    "tslib": "^2.5.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-plugin-dts": "^2.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.2",
+    "@typescript-eslint/parser": "^5.59.2",
+    "eslint": "^8.39.0"
+  },
+  "peerDependencies": {
+    "ethers": "^6.3.0"
   },
   "files": [
     "dist"
-  ],
-  "lint-staged": {
-    "*.{md,json,yml}": [
-      "prettier --write"
-    ],
-    "*.{js,ts}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
-  }
+  ]
 }
