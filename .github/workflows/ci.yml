@@ -19,29 +19,16 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Restore Yarn cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
-
       - name: 'Install Node.js'
         uses: 'actions/setup-node@v3'
         with:
           node-version: 'lts/*'
 
       - name: 'Install the Node.js dependencies'
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: 'Lint the code'
-        run: 'yarn lint'
+        run: 'npm run lint'
 
       - name: 'Add lint summary'
         run: |
@@ -55,29 +42,16 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Restore Yarn cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
-
       - name: 'Install Node.js'
         uses: 'actions/setup-node@v3'
         with:
           node-version: 'lts/*'
 
       - name: 'Install the Node.js dependencies'
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: 'Build the code'
-        run: 'yarn build'
+        run: 'npm run build'
 
       - name: 'Add build summary'
         run: |
@@ -92,29 +66,16 @@ jobs:
         with:
           submodules: 'recursive'
 
-      - name: Get Yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-        shell: bash
-
-      - name: Restore Yarn cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
-
       - name: 'Install Node.js'
         uses: 'actions/setup-node@v3'
         with:
           node-version: 'lts/*'
 
       - name: 'Install the Node.js dependencies'
-        run: yarn install --frozen-lockfile
+        run: npm install
 
       - name: 'Run the tests'
-        run: 'yarn test'
+        run: 'npm run test'
 
       - name: 'Add tests summary'
         run: |
