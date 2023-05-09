@@ -1,0 +1,48 @@
+name: Publish package to NPM
+
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Check out the repo'
+        uses: 'actions/checkout@v3'
+        with:
+          submodules: 'recursive'
+
+      - name: Get NPM cache directory path
+        id: npm-cache-dir-path
+        run: echo "dir=$(npm config get cacheFolder)" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Restore NPM cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.npm-cache-dir-path.outputs.dir }}
+          key: npm-cache-folder-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            npm-cache-folder-
+
+      - name: 'Install Node.js'
+        uses: 'actions/setup-node@v3'
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 'Install the Node.js dependencies'
+        run: npm install
+
+      - name: 'Build the package'
+        run: 'npm run build'
+
+      - run: 'npm publish'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TEMPUS_DECIMAL_PUBLISH_TOKEN }}
+
+      - name: 'Add publish summary'
+        run: |
+          echo "## Publish result" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Passed" >> $GITHUB_STEP_SUMMARY
