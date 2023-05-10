@@ -30,16 +30,10 @@ export default class Decimal {
       try {
         // the decimal part may exceed the precision range, check and truncate
         const strValue = `${value}`;
-
-        // In case provided value is not a number, set value to 0
-        if (isNaN(Number(strValue))) {
-          this.value = 0n;
-        } else {
-          const decimalPointIndex = strValue.indexOf('.');
-          const truncatedValue =
-            decimalPointIndex >= 0 ? strValue.substring(0, decimalPointIndex + valuePrecision + 1) : strValue;
-          this.value = ethers.parseUnits(truncatedValue, valuePrecision);
-        }
+        const decimalPointIndex = strValue.indexOf('.');
+        const truncatedValue =
+          decimalPointIndex >= 0 ? strValue.substring(0, decimalPointIndex + valuePrecision + 1) : strValue;
+        this.value = ethers.parseUnits(truncatedValue, valuePrecision);
       } catch (e) {
         throw new Error(`Failed to parse ${value} when creating Decimal`);
       }
