@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "name": "Unit Test - Debug",
+          "type": "node",
+          "request": "launch",
+          "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/jest",
+          "args": ["${fileBasenameNoExtension}"],
+          "cwd": "${workspaceRoot}",
+          "console": "integratedTerminal",
+          "internalConsoleOptions": "neverOpen"
+        },
+  ]
+}
