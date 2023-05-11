@@ -1,7 +1,7 @@
 {
   "name": "@tempusfinance/decimal",
   "private": false,
-  "version": "0.0.6",
+  "version": "0.0.7",
   "type": "module",
   "main": "./dist/decimal.umd.cjs",
   "module": "./dist/decimal.js",
@@ -42,9 +42,6 @@
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "eslint": "^8.39.0"
-  },
-  "peerDependencies": {
-    "ethers": "^6.3.0"
   },
   "files": [
     "dist"
