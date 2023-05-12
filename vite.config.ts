@@ -9,14 +9,6 @@ export default defineConfig({
       name: 'decimal',
       fileName: 'decimal',
     },
-    rollupOptions: {
-      external: ['ethers'],
-      output: {
-        globals: {
-          ethers: 'ethers',
-        },
-      },
-    },
   },
   plugins: [dts()],
 });

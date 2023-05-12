@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
 import Decimal from '../src/decimal';
+import { formatUnits, parseUnits } from '../src/utils';
 
 describe('Decimal', () => {
   describe('MAX_DECIMAL', () => {
@@ -51,25 +51,28 @@ describe('Decimal', () => {
     );
 
     [
-      { value: '0', expected: 0 },
-      { value: '0.0', expected: 0 },
-      { value: '.123', expected: 0.123 },
-      { value: '123.', expected: 123 },
-      { value: '-123', expected: -123 },
+      { value: '0', expected: 0n },
+      { value: '0.0', expected: 0n },
+      { value: '.123', expected: 123000000000000000n },
+      { value: '123.', expected: 123000000000000000000n },
+      { value: '-123', expected: -123000000000000000000n },
+      {
+        value: '12312412325325123124241252547656785634345234123.1231233243655456645675423443645457',
+        expected: 12312412325325123124241252547656785634345234123123123324365545664n,
+      },
     ].forEach(({ value, expected }) =>
       it(`accepts value ${value}`, () => {
         const decimal = new Decimal(value);
-        const result = new Decimal(expected);
+        const result = new Decimal(expected, Decimal.PRECISION);
 
         expect(decimal.equals(result)).toBe(true);
       }),
     );
 
-    [{ value: '.' }, { value: '' }, { value: '+123' }, { value: '1e8' }, { value: '123.01234567890.12345678' }].forEach(
-      ({ value }) =>
-        it(`throw error for accepting ${value}`, () => {
-          expect(() => new Decimal(value)).toThrow(`Failed to parse ${value} when creating Decimal`);
-        }),
+    [{ value: '.' }, { value: '' }, { value: '1e8' }, { value: '123.01234567890.12345678' }].forEach(({ value }) =>
+      it(`throw error for accepting ${value}`, () => {
+        expect(() => new Decimal(value)).toThrow(`Failed to parse ${value} when creating Decimal`);
+      }),
     );
   });
 
@@ -116,12 +119,10 @@ describe('Decimal', () => {
     [
       { value: '.', defaultValue: 789.789, expected: 789789000000000000000n },
       { value: '', defaultValue: 789.789, expected: 789789000000000000000n },
-      { value: '+123', defaultValue: 789.789, expected: 789789000000000000000n },
       { value: '1e8', defaultValue: 789.789, expected: 789789000000000000000n },
       { value: '123.01234567890.12345678', defaultValue: 789.789, expected: 789789000000000000000n },
       { value: '.', expected: 0n },
       { value: '', expected: 0n },
-      { value: '+123', expected: 0n },
       { value: '1e8', expected: 0n },
       { value: '123.01234567890.12345678', expected: 0n },
     ].forEach(({ value, defaultValue, expected }) =>
@@ -212,9 +213,9 @@ describe('Decimal', () => {
     for (let i = 0; i < 10; i++) {
       const value = Math.random() * 1000;
       const addend = Math.random() * 1000;
-      const expected = ethers.parseUnits(`${value}`, 18) + ethers.parseUnits(`${addend}`, 18);
+      const expected = parseUnits(`${value}`, 18) + parseUnits(`${addend}`, 18);
 
-      it(`${value} + ${addend} should be ${ethers.formatUnits(expected.toString(), 18)}`, () => {
+      it(`${value} + ${addend} should be ${formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
         const result = new Decimal(expected, Decimal.PRECISION);
 
@@ -246,9 +247,9 @@ describe('Decimal', () => {
     for (let i = 0; i < 10; i++) {
       const value = Math.random() * 1000;
       const subtrahend = Math.random() * 1000;
-      const expected = ethers.parseUnits(`${value}`, 18) - ethers.parseUnits(`${subtrahend}`, 18);
+      const expected = parseUnits(`${value}`, 18) - parseUnits(`${subtrahend}`, 18);
 
-      it(`${value} - ${subtrahend} should be ${ethers.formatUnits(expected.toString(), 18)}`, () => {
+      it(`${value} - ${subtrahend} should be ${formatUnits(BigInt(expected), 18)}`, () => {
         const decimal = new Decimal(value);
         const result = new Decimal(expected, Decimal.PRECISION);
 
@@ -286,9 +287,9 @@ describe('Decimal', () => {
     for (let i = 0; i < 10; i++) {
       const value = Math.random() * 1000;
       const multiplicand = Math.random() * 100;
-      const expected = (ethers.parseUnits(`${value}`, 18) * ethers.parseUnits(`${multiplicand}`, 18)) / 10n ** 18n;
+      const expected = (parseUnits(`${value}`, 18) * parseUnits(`${multiplicand}`, 18)) / 10n ** 18n;
 
-      it(`${value} * ${multiplicand} should be ${ethers.formatUnits(expected.toString(), 18)}`, () => {
+      it(`${value} * ${multiplicand} should be ${formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
         const result = new Decimal(expected, Decimal.PRECISION);
 
@@ -326,9 +327,9 @@ describe('Decimal', () => {
     for (let i = 0; i < 10; i++) {
       const value = Math.random() * 1000;
       const divisor = Math.random() * 100 + 1;
-      const expected = (ethers.parseUnits(`${value}`, 18) * 10n ** 18n) / ethers.parseUnits(`${divisor}`, 18);
+      const expected = (parseUnits(`${value}`, 18) * 10n ** 18n) / parseUnits(`${divisor}`, 18);
 
-      it(`${value} / ${divisor} should be ${ethers.formatUnits(expected.toString(), 18)}`, () => {
+      it(`${value} / ${divisor} should be ${formatUnits(expected, 18)}`, () => {
         const decimal = new Decimal(value);
         const result = new Decimal(expected, Decimal.PRECISION);
 

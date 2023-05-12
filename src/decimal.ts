@@ -1,5 +1,4 @@
-import { ethers } from 'ethers';
-import { abs, decreasePrecision, increasePrecision } from './utils';
+import { abs, decreasePrecision, formatUnits, increasePrecision, parseUnits } from './utils';
 
 export type Numberish = Decimal | string | number;
 export type BigNumberish = bigint | Numberish;
@@ -33,7 +32,7 @@ export default class Decimal {
         const decimalPointIndex = strValue.indexOf('.');
         const truncatedValue =
           decimalPointIndex >= 0 ? strValue.substring(0, decimalPointIndex + valuePrecision + 1) : strValue;
-        this.value = ethers.parseUnits(truncatedValue, valuePrecision);
+        this.value = parseUnits(truncatedValue, valuePrecision);
       } catch (e) {
         throw new Error(`Failed to parse ${value} when creating Decimal`);
       }
@@ -174,7 +173,7 @@ export default class Decimal {
   }
 
   toString(): string {
-    return ethers.formatUnits(this.value.toString(), Decimal.PRECISION).replace(/\.0*$/, '');
+    return formatUnits(this.value, Decimal.PRECISION);
   }
 
   toRounded(fractionDigits = 0): string {
@@ -191,8 +190,8 @@ export default class Decimal {
       }
       if (fractionDigits > 0) {
         // round to fractionDigits decimal places
-        const bigNum = ethers.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-        const strRounded = ethers.formatUnits(bigNum + 1n, fractionDigits);
+        const bigNum = parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+        const strRounded = formatUnits(bigNum + 1n, fractionDigits);
         const [outputIntegral, outputFraction] = strRounded.split('.');
         return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
       }
@@ -206,8 +205,8 @@ export default class Decimal {
     }
     if (fractionDigits > 0) {
       // round to fractionDigits decimal places
-      const bigNum = ethers.parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
-      const strRounded = ethers.formatUnits(bigNum - 1n, fractionDigits);
+      const bigNum = parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
+      const strRounded = formatUnits(bigNum - 1n, fractionDigits);
       const [outputIntegral, outputFraction] = strRounded.split('.');
       return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
     }
