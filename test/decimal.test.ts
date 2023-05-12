@@ -51,15 +51,19 @@ describe('Decimal', () => {
     );
 
     [
-      { value: '0', expected: 0 },
-      { value: '0.0', expected: 0 },
-      { value: '.123', expected: 0.123 },
-      { value: '123.', expected: 123 },
-      { value: '-123', expected: -123 },
+      { value: '0', expected: 0n },
+      { value: '0.0', expected: 0n },
+      { value: '.123', expected: 123000000000000000n },
+      { value: '123.', expected: 123000000000000000000n },
+      { value: '-123', expected: -123000000000000000000n },
+      {
+        value: '12312412325325123124241252547656785634345234123.1231233243655456645675423443645457',
+        expected: 12312412325325123124241252547656785634345234123123123324365545664n,
+      },
     ].forEach(({ value, expected }) =>
       it(`accepts value ${value}`, () => {
         const decimal = new Decimal(value);
-        const result = new Decimal(expected);
+        const result = new Decimal(expected, Decimal.PRECISION);
 
         expect(decimal.equals(result)).toBe(true);
       }),
