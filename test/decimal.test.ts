@@ -894,6 +894,11 @@ describe('Decimal', () => {
         fractionDigits: 2,
         expected: '4.00',
       },
+      {
+        value: '-3.999',
+        fractionDigits: 2,
+        expected: '-4.00',
+      },
     ].forEach(({ value, fractionDigits, expected }) =>
       it(`${value} should be rounded to ${expected}`, () => {
         const decimal = new Decimal(value);
