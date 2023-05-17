@@ -207,7 +207,7 @@ export default class Decimal {
       // round to fractionDigits decimal places
       const bigNum = parseUnits(`${integral}.${fraction.slice(0, fractionDigits)}`, fractionDigits);
       const strRounded = formatUnits(bigNum - 1n, fractionDigits);
-      const [outputIntegral, outputFraction] = strRounded.split('.');
+      const [outputIntegral, outputFraction = ''] = strRounded.split('.');
       return `${outputIntegral}.${outputFraction.padEnd(fractionDigits, '0')}`;
     }
     // rounded as negative integer, simply -1
