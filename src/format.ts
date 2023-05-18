@@ -9,7 +9,7 @@ type CommonFormatOptions = {
 
 type FormatOptionsVariants =
   | {
-      style: 'percentage' | 'decimal';
+      style: 'percentage' | 'groupedPercentage' | 'decimal';
     }
   | {
       style: 'currency';
@@ -76,6 +76,10 @@ export class DecimalFormat {
 
       case 'percentage':
         formattedValue = this.formatToPercentage(value, fractionDigits, round, pad);
+        break;
+
+      case 'groupedPercentage':
+        formattedValue = this.formatToGroupedPercentage(value, fractionDigits, round, pad);
         break;
 
       case 'decimal':
@@ -145,6 +149,25 @@ export class DecimalFormat {
     } else {
       return `${presentValue.toTruncated(fractionDigits, pad)}%`;
     }
+  }
+
+  private static formatToGroupedPercentage(
+    value: Numberish,
+    fractionDigits: number,
+    roundValue?: boolean,
+    pad?: boolean,
+  ): string {
+    const decimalValue = new Decimal(value);
+    const presentValue = decimalValue.mul(100);
+
+    const formattedValue = roundValue
+      ? presentValue.toRounded(fractionDigits)
+      : presentValue.toTruncated(fractionDigits, pad);
+
+    const [integerPart, fractionalPart] = formattedValue.split('.');
+    const integerWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return fractionalPart ? `${integerWithCommas}.${fractionalPart}%` : `${integerWithCommas}%`;
   }
 
   // Additional formatting prefixes and suffixes
