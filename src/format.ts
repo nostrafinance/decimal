@@ -9,7 +9,7 @@ type CommonFormatOptions = {
 
 type FormatOptionsVariants =
   | {
-      style: 'percentage' | 'groupedPercentage' | 'decimal';
+      style: 'percentage' | 'decimal';
     }
   | {
       style: 'currency';
@@ -78,10 +78,6 @@ export class DecimalFormat {
         formattedValue = this.formatToPercentage(value, fractionDigits, round, pad);
         break;
 
-      case 'groupedPercentage':
-        formattedValue = this.formatToGroupedPercentage(value, fractionDigits, round, pad);
-        break;
-
       case 'decimal':
         formattedValue = this.formatToDecimal(value, fractionDigits);
         break;
@@ -136,22 +132,6 @@ export class DecimalFormat {
   }
 
   private static formatToPercentage(
-    value: Numberish,
-    fractionDigits: number,
-    roundValue?: boolean,
-    pad?: boolean,
-  ): string {
-    const decimalValue = new Decimal(value);
-    const presentValue = decimalValue.mul(100);
-
-    if (roundValue) {
-      return `${presentValue.toRounded(fractionDigits)}%`;
-    } else {
-      return `${presentValue.toTruncated(fractionDigits, pad)}%`;
-    }
-  }
-
-  private static formatToGroupedPercentage(
     value: Numberish,
     fractionDigits: number,
     roundValue?: boolean,
