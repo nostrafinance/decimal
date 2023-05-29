@@ -144,7 +144,7 @@ export class DecimalFormat {
       ? presentValue.toRounded(fractionDigits)
       : presentValue.toTruncated(fractionDigits, pad);
 
-    const [integerPart, fractionalPart] = formattedValue.split('.');
+    const [integerPart, fractionalPart = ''] = formattedValue.split('.');
     const integerWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 
     return fractionalPart ? `${integerWithCommas}.${fractionalPart}%` : `${integerWithCommas}%`;
