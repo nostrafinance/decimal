@@ -140,11 +140,14 @@ export class DecimalFormat {
     const decimalValue = new Decimal(value);
     const presentValue = decimalValue.mul(100);
 
-    if (roundValue) {
-      return `${presentValue.toRounded(fractionDigits)}%`;
-    } else {
-      return `${presentValue.toTruncated(fractionDigits, pad)}%`;
-    }
+    const formattedValue = roundValue
+      ? presentValue.toRounded(fractionDigits)
+      : presentValue.toTruncated(fractionDigits, pad);
+
+    const [integerPart, fractionalPart = ''] = formattedValue.split('.');
+    const integerWithCommas = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    return fractionalPart ? `${integerWithCommas}.${fractionalPart}%` : `${integerWithCommas}%`;
   }
 
   // Additional formatting prefixes and suffixes
