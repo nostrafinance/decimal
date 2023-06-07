@@ -5,6 +5,7 @@ type CommonFormatOptions = {
   round?: boolean;
   pad?: boolean;
   lessThanFormat?: boolean;
+  approximate?: boolean;
 };
 
 type FormatOptionsVariants =
@@ -50,6 +51,7 @@ export class DecimalFormat {
    * @param options.lessThanFormat Whether to format the value with a less than sign in case when the value is not zero,
    *        but it is formatted as zero (e.g. `0.0001` is formatted as `0.00` when `options.fractionDigits` is set to
    *        `2`—when `options.lessThanFormat` is set to `true`, it changes the format to `<0.01`). `false` by default.
+   * @param options.approximate Whether to add the approximate sign (`~`) to the formatted value. `false` by default.
    * @param options.currency The currency symbol to use for formatting. It can be either `'$'` or any of supported
    *        tokens (either underlying or lending/collateral/debt ones). Used only when `options.style` is set to
    *        `'currency'` or `'multiplier'`. Optional for `'multiplier'` style.
@@ -58,7 +60,14 @@ export class DecimalFormat {
    * @returns The formatted value.
    */
   static format(value: Numberish, options: FormatOptions): string {
-    const { style, fractionDigits = 0, round = false, pad = false, lessThanFormat = false } = options;
+    const {
+      style,
+      fractionDigits = 0,
+      round = false,
+      pad = false,
+      lessThanFormat = false,
+      approximate = false,
+    } = options;
     let formattedValue: string;
 
     switch (style) {
@@ -87,6 +96,10 @@ export class DecimalFormat {
         formattedValue = this.formatWithCurrencySymbol(formattedDecimal, options.currency);
         break;
       }
+    }
+
+    if (approximate) {
+      formattedValue = this.formatWithApproximateSign(formattedValue);
     }
 
     return lessThanFormat ? this.formatWithLessThanSign(value, formattedValue, options) : formattedValue;
@@ -155,7 +168,14 @@ export class DecimalFormat {
   private static formatWithLessThanSign(value: Numberish, formattedValue: string, formatOptions: FormatOptions) {
     const decimalValue = new Decimal(value);
 
-    if (!decimalValue.isZero() && formattedValue === this.format(0, { ...formatOptions, lessThanFormat: false })) {
+    const zeroFormattedValue = this.format(0, { ...formatOptions, lessThanFormat: false });
+
+    if (!decimalValue.isZero() && formattedValue === zeroFormattedValue) {
+      // In case we are adding `<` sign, we do not need approximate `~` sign
+      if (formatOptions.approximate) {
+        formattedValue = formattedValue.replace('~', '');
+      }
+
       const lastZeroIndex = formattedValue.lastIndexOf('0');
       return `<${formattedValue.slice(0, lastZeroIndex)}1${formattedValue.slice(lastZeroIndex + 1)}`;
     }
@@ -165,5 +185,9 @@ export class DecimalFormat {
 
   private static formatWithCurrencySymbol(formattedValue: string, currency: string) {
     return currency === '$' ? `${currency}${formattedValue}` : `${formattedValue} ${currency}`;
+  }
+
+  private static formatWithApproximateSign(formattedValue: string) {
+    return `~${formattedValue}`;
   }
 }
