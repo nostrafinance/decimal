@@ -60,14 +60,7 @@ export class DecimalFormat {
    * @returns The formatted value.
    */
   static format(value: Numberish, options: FormatOptions): string {
-    const {
-      style,
-      fractionDigits = 0,
-      round = false,
-      pad = false,
-      lessThanFormat = false,
-      approximate = false,
-    } = options;
+    const { style, fractionDigits = 0, round, pad, lessThanFormat, approximate } = options;
     let formattedValue: string;
 
     switch (style) {
