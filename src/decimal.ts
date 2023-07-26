@@ -109,8 +109,12 @@ export default class Decimal {
     return new Decimal(quotient, Decimal.PRECISION);
   }
 
-  // TODO: it returns wrong result when exponent <= 0
+  // TODO: it returns wrong result when exponent < 0
   pow(exponent: number): Decimal {
+    if (exponent === 0) {
+      return Decimal.ONE;
+    }
+
     const result = this.value ** BigInt(exponent);
 
     return new Decimal(decreasePrecision(result, exponent * Decimal.PRECISION - Decimal.PRECISION), Decimal.PRECISION);

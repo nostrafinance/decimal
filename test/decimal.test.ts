@@ -341,7 +341,7 @@ describe('Decimal', () => {
   describe('pow()', () => {
     [
       // { value: 2, exponent: -1, expected: '0.5' },
-      // { value: 2, exponent: 0, expected: '1' },
+      { value: 2, exponent: 0, expected: '1' },
       { value: 2, exponent: 1, expected: '2' },
       { value: 2, exponent: 2, expected: '4' },
       { value: 2, exponent: 3, expected: '8' },
