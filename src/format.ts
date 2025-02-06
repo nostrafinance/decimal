@@ -120,7 +120,7 @@ export class DecimalFormat {
     const multiplier = MULTIPLIER_LOOKUP.find(item => integerLength >= item.numOfDigits);
 
     if (multiplier) {
-      return `${decimal.div('1'.padEnd(multiplier.numOfDigits, '0')).toRounded(multiplierFractionDigits)}${
+      return `${decimal.div('1'.padEnd(multiplier.numOfDigits, '0')).toTruncated(multiplierFractionDigits, true)}${
         multiplier.symbol
       }`;
     }
