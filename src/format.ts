@@ -1,4 +1,4 @@
-import Decimal, { Numberish } from './decimal';
+import { Decimal, Numberish } from './decimal';
 
 type CommonFormatOptions = {
   fractionDigits?: number;

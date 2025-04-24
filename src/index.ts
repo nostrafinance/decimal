@@ -1,4 +1,4 @@
-import Decimal from './decimal';
+import { Decimal } from './decimal';
 
 export type { BigNumberish, Numberish } from './decimal';
 
