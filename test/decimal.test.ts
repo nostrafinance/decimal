@@ -1,4 +1,4 @@
-import Decimal from '../src/decimal';
+import { Decimal } from '../src/decimal';
 import { formatUnits, parseUnits } from '../src/utils';
 
 describe('Decimal', () => {

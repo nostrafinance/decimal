@@ -3,7 +3,7 @@ import { abs, decreasePrecision, formatUnits, increasePrecision, parseUnits } fr
 export type Numberish = Decimal | string | number;
 export type BigNumberish = bigint | Numberish;
 
-export default class Decimal {
+class Decimal {
   static readonly PRECISION = 18;
 
   static readonly ZERO = new Decimal(0);
@@ -235,3 +235,5 @@ export default class Decimal {
     return integral;
   }
 }
+
+export { Decimal };
