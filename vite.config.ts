@@ -6,9 +6,14 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
+      formats: ['es', 'cjs'],
       name: 'decimal',
-      fileName: 'decimal',
+      fileName: 'index',
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
 });
